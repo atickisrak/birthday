@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>My_Love</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================
+       1. CSS Variables & Reset
+       ========================================== */
+    :root {
+      --bg-1: #1f0a24;
+      --bg-2: #050505;
+      --pink-1: #ff1493;
+      --pink-2: #ff69b4;
+      --pink-3: #ffb6c1;
+      --gold: #ffd700;
+      --text: #ffffff;
+      --text-dim: rgba(255, 255, 255, 0.8);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      height: 100dvh; /* মোবাইলে address bar এর কারণে vh এর সমস্যা এড়াতে */
+    }
+
+    body {
+      background: radial-gradient(circle at center, var(--bg-1) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      perspective: 1000px;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Accessibility Motion Reduction */
+    @media (prefers-reduced-motion: reduce) {
+      .bg-strip, .carousel-container, .particle {
+        animation: none !important;
+      }
+    }
+
+    /* ==========================================
+       2. Start Button
+       ========================================== */
+    #start-btn {
+      position: absolute;
+      z-index: 100;
+      padding: 18px 42px;
+      font-size: 20px;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink-1), var(--pink-2));
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(255, 20, 147, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3);
+      transition: all 0.4s ease;
+      letter-spacing: 1px;
+    }
+
+    #start-btn:hover {
+      transform: scale(1.08) translateY(-3px);
+      box-shadow: 0 15px 40px rgba(255, 20, 147, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    #start-btn:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    /* ==========================================
+       3. Main Layout & Header
+       ========================================== */
+    #ui {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      transform-style: preserve-3d;
+    }
+
+    .title-container {
+      position: absolute;
+      top: calc(4% + env(safe-area-inset-top, 0px));
+      width: 100%;
+      text-align: center;
+      z-index: 100;
+      animation: titleRise 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      padding: 0 16px;
+    }
+
+    .title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(26px, 6vw, 42px);
+      color: var(--pink-3);
+      text-shadow: 0 0 15px var(--pink-1), 0 0 30px var(--pink-1), 0 0 45px var(--pink-2);
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-dim);
+      letter-spacing: 2px;
+      margin-top: 5px;
+    }
+
+    @keyframes titleRise {
+      0% {
+        transform: translateY(60px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* ==========================================
+       4. Music Toggle Controls
+       ========================================== */
+    #music-toggle {
+      position: absolute;
+      top: calc(20px + env(safe-area-inset-top, 0px));
+      right: 20px;
+      z-index: 101;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 18px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: 0.3s;
+    }
+
+    #music-toggle:hover {
+      background: rgba(255, 20, 147, 0.4);
+      transform: scale(1.1);
+    }
+
+    #music-toggle:focus-visible {
+      outline: 2px solid var(--gold);
+    }
+
+    /* ==========================================
+       5. Background Marquee Strip
+       ========================================== */
+    .bg-strip-container {
+      position: absolute;
+      bottom: calc(6% + env(safe-area-inset-bottom, 0px));
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      z-index: 1;
+      opacity: 0.35;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    }
+
+    .bg-strip {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+      animation: marquee 40s linear infinite;
+    }
+
+    .bg-strip .thumb {
+      width: 130px;
+      height: 180px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 105, 180, 0.5);
+      box-shadow: 0 0 15px rgba(255, 20, 147, 0.3);
+      overflow: hidden;
+      flex: none;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ==========================================
+       6. 3D Carousel & Image Cards
+       ========================================== */
+    .carousel-container {
+      position: relative;
+      width: 210px;
+      height: 310px;
+      transform-style: preserve-3d;
+      transform: rotateX(-8deg);
+      z-index: 10;
+    }
+
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 105, 180, 0.8);
+      background: #111;
+      box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+      transition: filter 0.3s ease;
+    }
+
+    .card img, .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Missing image fallbacks */
+    .card.no-img, .thumb.no-img {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #3a0f3f, #7a1f5c 60%, #ff69b4);
+      font-size: 28px;
+    }
+
+    .thumb.no-img {
+      font-size: 16px;
+    }
+
+    /* ==========================================
+       7. Particles (Confetti & Hearts)
+       ========================================== */
+    .particle {
+      position: absolute;
+      top: -20px;
+      pointer-events: none;
+      z-index: 999;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(105vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Mobile Adaptations */
+    @media (max-width: 600px) {
+      .carousel-container {
+        width: 140px;
+        height: 200px;
+      }
+      .bg-strip .thumb {
+        width: 85px;
+        height: 120px;
+      }
+      #start-btn {
+        padding: 15px 32px;
+        font-size: 16px;
+      }
+      #music-toggle {
+        width: 38px;
+        height: 38px;
+        font-size: 15px;
+      }
+    }
+
+    /* ==========================================
+       8. 🎬 CINEMATIC REVEAL (নতুন যোগ করা হয়েছে)
+       ========================================== */
+    .cine-panel {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      height: 51vh;      /* মাঝ বরাবর সামান্য ওভারল্যাপ যাতে ফাঁক না থাকে */
+      height: 51dvh;
+      background: #000;
+      z-index: 9999;     /* সব কিছুর উপরে, কিন্তু নিচের active ক্লাস না বসা পর্যন্ত অদৃশ্য */
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* ক্লিক করার সাথে সাথে এই ক্লাসটা যোগ হয়ে ইনস্ট্যান্ট পুরো স্ক্রিন কালো করে দেয় */
+    .cine-panel.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cine-panel.top {
+      top: 0;
+      transform: translateY(0);
+    }
+
+    .cine-panel.bottom {
+      bottom: 0;
+      transform: translateY(0);
+    }
+
+    /* স্লাইড হয়ে সরে যাওয়ার অ্যানিমেশন ক্লাস */
+    .cine-panel.slide-open.top {
+      transition: transform 1.3s cubic-bezier(0.85, 0, 0.15, 1);
+      transform: translateY(-100%);
+    }
+
+    .cine-panel.slide-open.bottom {
+      transition: transform 1.3s cubic-bezier(0.85, 0, 0.15, 1);
+      transform: translateY(100%);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cine-panel.slide-open.top,
+      .cine-panel.slide-open.bottom {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎬 CINEMATIC REVEAL PANELS (নতুন যোগ করা হয়েছে) -->
+  <div class="cine-panel top" id="cineTop"></div>
+  <div class="cine-panel bottom" id="cineBottom"></div>
+
+  <!-- Background Music Source -->
+  <audio id="bg-music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Start Trigger -->
+  <button id="start-btn">Click For Magic 🎉</button>
+
+  <!-- Interactive Canvas & Content -->
+  <div id="ui" role="region" aria-label="Birthday celebration">
+    <button id="music-toggle" title="Toggle music" aria-label="Toggle music">🎵</button>
+
+    <div class="title-container">
+      <h1 class="title">Happy Birthday My Love Nusrat ❤️</h1>
+      <p class="subtitle">MAY ALLAH FULFILL ALL YOUR WISHES</p>
+    </div>
+
+    <div class="bg-strip-container">
+      <div class="bg-strip" id="bgStrip"></div>
+    </div>
+
+    <div class="carousel-container" id="carousel"></div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 📸 আপনার ছবিগুলোর নাম এখানে দিন 
+    // ==========================================
+    
+    // ১. ৩ডি ক্যারোসেলে (উপরে ঘুরবে) যে ছবিগুলো দেখাবেন:
+    const carouselImages = [
+      'pic1.jpg',
+      'pic2.jpg',
+      'pic3.jpg',
+      'pic4.jpg',
+      'pic5.jpg',
+      'pic6.jpg',
+      'pic7.jpg'
+    ];
+
+    // ২. নিচের স্লাইডিং বারে যে ছবিগুলো দেখাবেন:
+    const bgStripImages = [
+      'pic1.jpg',
+      'pic2.jpg',
+      'pic3.jpg',
+      'pic8.jpg',
+      'pic9.jpg',
+      'pic10.jpg',
+      'pic11.jpg',
+      'pic12.jpg',
+    ];
+
+    // ==========================================
+    // App Setup & State Data
+    // ==========================================
+    const fallbackIcons = ['💖', '✨', '❤️', '🌸', '💐', '🎂', '🌷'];
+
+    const carousel = document.getElementById('carousel');
+    const bgStrip = document.getElementById('bgStrip');
+    const startBtn = document.getElementById('start-btn');
+    const ui = document.getElementById('ui');
+    const bgMusic = document.getElementById('bg-music');
+    const musicToggle = document.getElementById('music-toggle');
+
+    const total = carouselImages.length;
+    let radius = window.innerWidth < 600 ? 190 : 320;
+    let angle = 0;
+    let isPlaying = true;
+    let rafId = null;
+    let confettiTimer = null;
+    let heartTimer = null;
+
+    // Element Generator
+    function makeImgOrFallback(src, className, icon) {
+      const wrap = document.createElement('div');
+      wrap.className = className;
+      
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = 'Birthday photo';
+      img.loading = 'lazy';
+      
+      img.onerror = () => {
+        wrap.classList.add('no-img');
+        wrap.textContent = icon;
+      };
+      
+      wrap.appendChild(img);
+      return wrap;
+    }
+
+    // Populate Foreground 3D Carousel
+    carouselImages.forEach((src, i) => {
+      carousel.appendChild(makeImgOrFallback(src, 'card', fallbackIcons[i % fallbackIcons.length]));
+    });
+    const cards = carousel.querySelectorAll('.card');
+
+    // Populate Background Strip (Tripled for smooth continuous scroll)
+    [...bgStripImages, ...bgStripImages, ...bgStripImages].forEach((src, i) => {
+      bgStrip.appendChild(makeImgOrFallback(src, 'thumb', fallbackIcons[i % fallbackIcons.length]));
+    });
+
+    // ==========================================
+    // 🎬 CINEMATIC REVEAL FUNCTION (নতুন যোগ করা হয়েছে)
+    // ==========================================
+    function playCinematicReveal() {
+      const cineTop = document.getElementById('cineTop');
+      const cineBottom = document.getElementById('cineBottom');
+
+      // ধাপ ১: ইনস্ট্যান্ট পুরো স্ক্রিন কালো করে দাও (কোনো ট্রানজিশন ছাড়াই)
+      cineTop.classList.add('active');
+      cineBottom.classList.add('active');
+
+      // ধাপ ২: সামান্য পজ (পুরো স্ক্রিন কালো থাকা অবস্থায়) - সিনেম্যাটিক ফিল দেয়
+      setTimeout(() => {
+        cineTop.classList.add('slide-open');
+        cineBottom.classList.add('slide-open');
+
+        // অ্যানিমেশন শেষ হলে প্যানেলগুলো DOM থেকে সরিয়ে দাও
+        setTimeout(() => {
+          cineTop.remove();
+          cineBottom.remove();
+        }, 1400);
+      }, 250);
+    }
+
+    // ==========================================
+    // Event Handlers
+    // ==========================================
+    startBtn.addEventListener('click', () => {
+      playCinematicReveal(); // 🎬 CINEMATIC REVEAL (নতুন যোগ করা হয়েছে)
+
+      startBtn.style.display = 'none';
+      ui.style.display = 'flex';
+
+      bgMusic.play().catch(() => {
+        musicToggle.textContent = '🔇';
+        isPlaying = false;
+      });
+
+      triggerCelebration();
+      heartTimer = setInterval(createFloatingHeart, 800);
+      animate();
+    }, { once: true });
+
+    musicToggle.addEventListener('click', () => {
+      if (isPlaying) {
+        bgMusic.pause();
+        musicToggle.textContent = '🔇';
+      } else {
+        bgMusic.play().catch(() => {});
+        musicToggle.textContent = '🎵';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    window.addEventListener('resize', () => {
+      radius = window.innerWidth < 600 ? 190 : 320;
+    });
+
+    // ==========================================
+    // Animation Logic
+    // ==========================================
+    function triggerCelebration() {
+      const colors = ['#ff1493', '#ff69b4', '#00ffff', '#ffd700', '#ff4500', '#7b68ee'];
+      
+      confettiTimer = setInterval(() => {
+        for (let i = 0; i < 6; i++) {
+          const p = document.createElement('div');
+          p.className = 'particle';
+          
+          if (Math.random() > 0.5) {
+            p.textContent = '❤️';
+            p.style.fontSize = (Math.random() * 12 + 12) + 'px';
+          } else {
+            p.style.width = '10px';
+            p.style.height = '14px';
+            p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            p.style.borderRadius = '3px';
+          }
+          
+          p.style.left = Math.random() * 100 + 'vw';
+          p.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+          
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), 4500);
+        }
+      }, 70);
+
+      setTimeout(() => clearInterval(confettiTimer), 5000);
+    }
+
+    function createFloatingHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'particle';
+      heart.textContent = ['💖', '✨', '❤️', '🌸'][Math.floor(Math.random() * 4)];
+      heart.style.fontSize = (Math.random() * 10 + 12) + 'px';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.opacity = Math.random() * 0.7 + 0.3;
+      heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+
+    function animate() {
+      angle += 0.004;
+      
+      cards.forEach((card, index) => {
+        const cardAngle = angle + (index * (Math.PI * 2 / total));
+        const x = Math.sin(cardAngle) * radius;
+        const z = Math.cos(cardAngle) * radius;
+        const depthScale = (z + radius) / (2 * radius);
+        const opacity = 0.4 + (depthScale * 0.6);
+        const blurValue = (1 - depthScale) * 3;
+
+        card.style.opacity = opacity;
+        card.style.filter = `blur(${blurValue}px)`;
+        card.style.transform = `translate3d(${x}px, 0px, ${z}px) rotateY(${cardAngle * (180 / Math.PI)}deg)`;
+      });
+
+      rafId = requestAnimationFrame(animate);
+    }
+  </script>
+</body>
+</html>
